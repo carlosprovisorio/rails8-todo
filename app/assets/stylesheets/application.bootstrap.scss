@@ -1,2 +1,10 @@
 @import 'bootstrap/scss/bootstrap';
 @import 'bootstrap-icons/font/bootstrap-icons';
+
+$body-bg-dark: #11131a;
+$body-color-dark: #e8eaed;
+
+// Custom utilities
+.bg-body {
+  background-color: var(--bs-body-bg);
+}
