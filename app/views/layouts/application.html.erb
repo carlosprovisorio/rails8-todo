@@ -21,7 +21,14 @@
         </button>
 
         <div class="collapse navbar-collapse" id="mainNav">
-          <ul class="navbar-nav ms-auto">
+          <ul class="navbar-nav ms-auto" data-controller="theme">
+            <% if user_signed_in? %>
+              <li class="nav-item"><span class="nav-link disabled">Hi, <%= current_user.first_name.presence || current_user.email %></span></li>
+              <li class="nav-item"><%= link_to "Sign out", sign_out_path, data: { turbo_method: :delete }, class: "nav-link" %></li>
+            <% else %>
+              <li class="nav-item"><%= link_to "Sign in", sign_in_path, class: "nav-link" %></li>
+              <li class="nav-item"><%= link_to "Sign up", sign_up_path, class: "nav-link" %></li>
+            <% end %>
             <li class="nav-item">
               <a class="nav-link" href="#" data-action="click->theme#toggle">Toggle Theme</a>
             </li>

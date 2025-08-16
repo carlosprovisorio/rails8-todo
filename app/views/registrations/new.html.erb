@@ -1,0 +1,45 @@
+<div class="row justify-content-center">
+  <div class="col-md-6">
+    <h1 class="h4 mb-3">Create your account</h1>
+
+    <%= form_with model: @user, url: sign_up_path, class: "vstack gap-3" do |f| %>
+      <div>
+        <%= f.label :first_name, class: "form-label" %>
+        <%= f.text_field :first_name, class: "form-control" %>
+      </div>
+      <div>
+        <%= f.label :last_name, class: "form-label" %>
+        <%= f.text_field :last_name, class: "form-control" %>
+      </div>
+      <div>
+        <%= f.label :time_zone, class: "form-label" %>
+        <%= f.text_field :time_zone, class: "form-control", placeholder: "e.g. America/Toronto" %>
+      </div>
+      <div>
+        <%= f.label :email, class: "form-label" %>
+        <%= f.email_field :email, class: "form-control", autofocus: true %>
+      </div>
+      <div class="row g-3">
+        <div class="col">
+          <%= f.label :password, class: "form-label" %>
+          <%= f.password_field :password, class: "form-control" %>
+        </div>
+        <div class="col">
+          <%= f.label :password_confirmation, class: "form-label" %>
+          <%= f.password_field :password_confirmation, class: "form-control" %>
+        </div>
+      </div>
+
+      <% if @user.errors.any? %>
+        <div class="alert alert-warning">
+          <ul class="mb-0">
+            <% @user.errors.full_messages.each do |msg| %><li><%= msg %></li><% end %>
+          </ul>
+        </div>
+      <% end %>
+
+      <%= f.submit "Sign up", class: "btn btn-primary" %>
+      <div class="small mt-2">Already have an account? <%= link_to "Sign in", sign_in_path %></div>
+    <% end %>
+  </div>
+</div>
