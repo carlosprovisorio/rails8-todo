@@ -11,13 +11,13 @@ class PasswordResetsController < ApplicationController
   end
 
   def edit
-    @user = User.find_signed!(params[:token], purpose: :password_reset)
+    @user = User.find_signed!(params[:id], purpose: :password_reset)
   rescue ActiveSupport::MessageVerifier::InvalidSignature
     redirect_to new_password_reset_path, alert: "Your reset link has expired. Please request a new one."
   end
 
   def update
-    @user = User.find_signed!(params[:token], purpose: :password_reset)
+    @user = User.find_signed!(params[:id], purpose: :password_reset)
     if @user.update(password_params)
       redirect_to sign_in_path, notice: "Your password has been reset. Please sign in."
     else
