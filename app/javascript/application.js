@@ -1,4 +1,5 @@
-import "@hotwired/turbo-rails"
-import "./controllers"
-import * as bootstrap from "bootstrap"
-window.bootstrap = bootstrap
+// --- IMPORTS (Turbo FIRST) ---
+import "@hotwired/turbo-rails";
+import "./controllers";
+import * as bootstrap from "bootstrap";
+window.bootstrap = bootstrap;
