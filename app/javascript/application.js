@@ -1,4 +1,4 @@
-import "@hotwired/turbo-rails"
-import "./controllers"
-import * as bootstrap from "bootstrap"
-window.bootstrap = bootstrap // optional: make it available globally
+import "@hotwired/turbo-rails";
+import "./controllers";
+import "bootstrap"
+
