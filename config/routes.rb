@@ -1,8 +1,4 @@
 Rails.application.routes.draw do
-  get "password_resets/new"
-  get "password_resets/create"
-  get "password_resets/edit"
-  get "password_resets/update"
   # Root
   root "home#index"
 
@@ -17,7 +13,7 @@ Rails.application.routes.draw do
 
   get "up" => "rails/health#show", as: :rails_health_check
 
-  resources :password_resets, only: [ :new, :create, :edit, :update ]
+  resource :password_reset, only: [ :new, :create, :edit, :update ]
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
