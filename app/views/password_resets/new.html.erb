@@ -3,7 +3,6 @@
     <h1 class="h4 mb-3">Forgot your password?</h1>
     <%= form_with url: password_resets_path,
               method: :post,
-              data: { turbo: false },
               authenticity_token: true,
               class: "vstack gap-3" do |f| %>
       <div>

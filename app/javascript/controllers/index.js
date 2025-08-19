@@ -8,3 +8,5 @@ import ThemeController from "./theme_controller"
 const application = Application.start()
 application.register("theme", ThemeController)
 
+export { application }
+
