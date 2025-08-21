@@ -70,3 +70,5 @@ group :test do
 end
 
 gem "bcrypt", "~> 3.1"
+
+gem "faker", "~> 3.5", groups: [ :development, :test ]
