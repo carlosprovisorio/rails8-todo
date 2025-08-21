@@ -1,6 +1,9 @@
 class User < ApplicationRecord
   has_secure_password
 
+  has_many :lists, dependent: :destroy
+  has_many :tasks, dependent: :destroy
+
   # Validations
   NORMALIZED_EMAIL = /\A[^@\s]+@[^@\s]+\z/
 
