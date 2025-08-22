@@ -1,0 +1,25 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  user: one
+  list: one
+  title: MyString
+  notes: MyText
+  due_at: 2025-08-19 19:54:58
+  priority: 1
+  status: 1
+  position: 1
+  completed_at: 2025-08-19 19:54:58
+  archived_at: 2025-08-19 19:54:58
+
+two:
+  user: two
+  list: two
+  title: MyString
+  notes: MyText
+  due_at: 2025-08-19 19:54:58
+  priority: 1
+  status: 1
+  position: 1
+  completed_at: 2025-08-19 19:54:58
+  archived_at: 2025-08-19 19:54:58

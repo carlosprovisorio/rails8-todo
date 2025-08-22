@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task: one
+  remind_at: 2025-08-19 20:02:31
+  channel: MyString
+  delivered_at: 2025-08-19 20:02:31
+
+two:
+  task: two
+  remind_at: 2025-08-19 20:02:31
+  channel: MyString
+  delivered_at: 2025-08-19 20:02:31

@@ -1,0 +1,13 @@
+# Read about fixtures at https://api.rubyonrails.org/classes/ActiveRecord/FixtureSet.html
+
+one:
+  task: one
+  rule: MyText
+  time_zone: MyString
+  next_occurrence_at: 2025-08-19 20:01:16
+
+two:
+  task: two
+  rule: MyText
+  time_zone: MyString
+  next_occurrence_at: 2025-08-19 20:01:16
