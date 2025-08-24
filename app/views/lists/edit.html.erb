@@ -1,0 +1,7 @@
+<%= form_with model: @list, class: "vstack gap-2" do |f| %>
+  <div class="input-group">
+    <%= f.text_field :name, class: "form-control" %>
+    <%= f.color_field :color, class: "form-control form-control-color" %>
+    <button class="btn btn-primary">Save</button>
+  </div>
+<% end %>
