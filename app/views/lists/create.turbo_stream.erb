@@ -1,5 +1,3 @@
 <%= turbo_stream.replace "lists" do %>
-  <%= turbo_frame_tag "lists" do %>
-    <%= render "lists/grid" %>
-  <% end %>
+  <%= render partial: "lists/grid", locals: { lists: @lists } %>
 <% end %>
