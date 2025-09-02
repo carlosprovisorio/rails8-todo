@@ -1,0 +1,10 @@
+<% lists = local_assigns[:lists] || @lists || [] %> 
+<div class="row g-3"
+     data-controller="sortable"
+     data-sortable-url-value="<%= reorder_lists_path %>">
+  <% lists.each do |list| %>
+    <div class="col-md-4" data-id="<%= list.id %>">
+      <%= render "card", list: list %>
+    </div>
+  <% end %>
+</div>

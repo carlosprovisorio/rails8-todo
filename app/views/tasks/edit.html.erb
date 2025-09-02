@@ -1,0 +1,14 @@
+<%= form_with model: [@list, @task], class: "vstack gap-2" do |f| %>
+  <div class="row g-2">
+    <div class="col-md-6"><%= f.text_field :title, class: "form-control" %></div>
+    <div class="col-md-3"><%= f.text_field :due_at, class: "form-control", data: { controller: "date-picker" } %></div>
+    <div class="col-md-3"><%= f.select :priority, Task.priorities.keys.map{|p|[p.titleize,p]}, {}, class: "form-select" %></div>
+  </div>
+  <%= f.text_area :notes, rows: 3, class: "form-control" %>
+  <%= f.text_field :tag_list, class: "form-control", placeholder: "tags" %>
+  <%= f.file_field :files, multiple: true, direct_upload: true, class: "form-control" %>
+  <div class="d-flex gap-2">
+    <button class="btn btn-primary">Save</button>
+    <%= link_to "Cancel", list_path(@list), data: { turbo_frame: "_top" }, class: "btn btn-outline-secondary" %>
+  </div>
+<% end %>
