@@ -1,3 +1,5 @@
 <%= turbo_stream.replace "lists" do %>
-  <%= render partial: "lists/index", formats: [:html] %>
+  <%= turbo_frame_tag "lists" do %>
+    <%= render "lists/grid" %>
+  <% end %>
 <% end %>

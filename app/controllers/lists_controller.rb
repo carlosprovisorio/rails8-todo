@@ -15,12 +15,12 @@ class ListsController < ApplicationController
   def create
     @list = current_user.lists.new(list_params.merge(position: next_position))
     if @list.save
+      @lists = current_user.lists.order(:position)
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to list_path, notice: "List created." }
       end
     else
-      set_lists
       render :index, status: :unprocessable_entity
     end
   end
@@ -30,7 +30,7 @@ class ListsController < ApplicationController
 
   def update
     if @list.update(list_params)
-      set_lists
+      @lists = current_user.lists.order(:position)
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to lists_path, notice: "List updated." }
@@ -42,7 +42,7 @@ class ListsController < ApplicationController
 
   def destroy
     @list.destroy
-    set_lists
+    @lists = current_user.lists.order(:position)
     respond_to do |f|
       f.turbo_stream
       f.html { redirect_to lists_path, notice: "List deleted." }
