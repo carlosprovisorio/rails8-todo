@@ -3,8 +3,7 @@ class ListsController < ApplicationController
   before_action :set_list, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    set_lists
-    @list = current_user.lists.new
+    prepare_index_collections
   end
 
   def show
@@ -15,12 +14,13 @@ class ListsController < ApplicationController
   def create
     @list = current_user.lists.new(list_params.merge(position: next_position))
     if @list.save
-      @lists = current_user.lists.order(:position)
+      prepare_index_collections
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to list_path, notice: "List created." }
       end
     else
+      prepare_index_collections
       render :index, status: :unprocessable_entity
     end
   end
@@ -30,19 +30,20 @@ class ListsController < ApplicationController
 
   def update
     if @list.update(list_params)
-      @lists = current_user.lists.order(:position)
+      prepare_index_collections
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to lists_path, notice: "List updated." }
       end
     else
+      prepare_index_collections
       render :edit, status: :unprocessable_entity
     end
   end
 
   def destroy
     @list.destroy
-    @lists = current_user.lists.order(:position)
+    prepare_index_collections
     respond_to do |f|
       f.turbo_stream
       f.html { redirect_to lists_path, notice: "List deleted." }
@@ -60,6 +61,11 @@ class ListsController < ApplicationController
   end
 
   private
+  def prepare_index_collections
+    @lists = current_user.lists.order(:position)
+    @list = @list || current_user.lists.new
+  end
+
   def set_list
     @list = current_user.lists.find(params[:id])
   end
