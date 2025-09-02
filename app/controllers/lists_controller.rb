@@ -1,9 +1,9 @@
-class ListController < ApplicationController
+class ListsController < ApplicationController
   before_action :authenticate_user!
   before_action :set_list, only: [ :show, :edit, :update, :destroy ]
 
   def index
-    @lists = current_user.lists.order(:position)
+    set_lists
     @list = current_user.lists.new
   end
 
@@ -20,6 +20,7 @@ class ListController < ApplicationController
         f.html { redirect_to list_path, notice: "List created." }
       end
     else
+      set_lists
       render :index, status: :unprocessable_entity
     end
   end
@@ -29,6 +30,7 @@ class ListController < ApplicationController
 
   def update
     if @list.update(list_params)
+      set_lists
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to lists_path, notice: "List updated." }
@@ -40,6 +42,7 @@ class ListController < ApplicationController
 
   def destroy
     @list.destroy
+    set_lists
     respond_to do |f|
       f.turbo_stream
       f.html { redirect_to lists_path, notice: "List deleted." }
@@ -59,6 +62,10 @@ class ListController < ApplicationController
   private
   def set_list
     @list = current_user.lists.find(params[:id])
+  end
+
+  def set_lists
+    @lists = current_user.lists.order(:position)
   end
 
   def list_params
