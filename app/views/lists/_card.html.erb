@@ -1,33 +1,32 @@
-<div class="card h-100 shadow-sm">
-  <div class="card-body">
-    <div class="d-flex align-items-center justify-content-between">
-      <div class="d-flex align-items-center gap-2">
-        <span class="badge rounded-pill" style="background: <%= list.color %>;">&nbsp;</span>
-        <h2 class="h6 mb-0">
-          <%= link_to list.name, list_path(list), class: "text-decoration-none" %>
-        </h2>
+<%= turbo_frame_tag dom_id(list) do %>
+  <div class="card h-100 shadow-sm">
+    <div class="card-body">
+      <div class="d-flex align-items-center justify-content-between">
+        <div class="d-flex align-items-center gap-2">
+          <span class="badge rounded-pill" style="background: <%= list.color %>;">&nbsp;</span>
+          <h2 class="h6 mb-0">
+            <%= link_to list.name, list_path(list), data: { turbo_frame: "_top" }, class: "text-decoration-none" %>
+          </h2>
+        </div>
+        <span class="text-muted" data-drag-handle role="button" title="Drag">≡</span>
       </div>
-      <span class="text-muted" data-drag-handle role="button" title="Drag">≡</span>
+
+      <div class="mt-2 small text-secondary">
+        <%= pluralize(list.tasks.active.count, "task") %>
+      </div>
     </div>
 
-    <div class="mt-2 small text-secondary">
-      <%= pluralize(list.tasks.active.count, "task") %>
+    <div class="card-footer d-flex gap-2">
+      <%= link_to "Rename",
+                  edit_list_path(list),
+                  data: { turbo_frame: dom_id(list) },
+                  class: "btn btn-sm btn-outline-secondary" %>
+
+      <%= button_to "Delete",
+                    list_path(list),
+                    method: :delete,
+                    form: { data: { turbo_confirm: "Delete list and its tasks?" } },
+                    class: "btn btn-sm btn-outline-danger" %>
     </div>
   </div>
-
-  <div class="card-footer d-flex gap-2">
-    <%= link_to "Rename",
-                edit_list_path(list),
-                data: { turbo_frame: dom_id(list) },
-                class: "btn btn-sm btn-outline-secondary" %>
-
-    <%= button_to "Delete",
-                  list_path(list),
-                  method: :delete,
-                  form: { data: { turbo_confirm: "Delete list and its tasks?" } },
-                  class: "btn btn-sm btn-outline-danger" %>
-  </div>
-</div>
-
-<!-- Target frame lives near the card so the edit form replaces it inline -->
-<%= turbo_frame_tag dom_id(list) %>
+<% end %>

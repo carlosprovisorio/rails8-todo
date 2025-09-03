@@ -14,20 +14,29 @@ class ListsController < ApplicationController
 
   def create
     @list = current_user.lists.new(list_params.merge(position: next_position))
+
     if @list.save
       respond_to do |f|
-        f.turbo_stream
+        f.turbo_stream # -> create.turbo_stream.erb (success branch)
         f.html { redirect_to lists_path, notice: "List created." }
       end
     else
       @lists = current_user.lists.order(:position)
-      render :index, status: :unprocessable_entity
+      respond_to do |f|
+        # REPLACE the lists frame with the form (including @list.errors) + grid
+        f.turbo_stream do
+          render turbo_stream: turbo_stream.replace(
+            "lists",
+            partial: "lists/index_body",
+            locals: { lists: @lists, list: @list }
+          ), status: :unprocessable_content
+        end
+        f.html { render :index, status: :unprocessable_content }
+      end
     end
   end
 
-  def edit
-    # Renders edit.html.erb; now explicitly wrapped in the correct turbo_frame_tag
-  end
+  def edit; end
 
   def update
     if @list.update(list_params)
@@ -36,7 +45,7 @@ class ListsController < ApplicationController
         f.html { redirect_to lists_path, notice: "List updated." }
       end
     else
-      render :edit, status: :unprocessable_entity
+      render :edit, status: :unprocessable_content
     end
   end
 

@@ -1,3 +1,9 @@
-@import 'bootstrap/scss/bootstrap';
-@import 'bootstrap-icons/font/bootstrap-icons';
-@import "flatpickr/dist/flatpickr";
+@import "bootstrap/scss/bootstrap";
+@import "flatpickr/dist/flatpickr.min.css";
+
+/* Drag affordance */
+[data-drag-handle] { cursor: grab; }
+
+/* Ensure frames behave like regular blocks */
+turbo-frame { display: block; }
+
