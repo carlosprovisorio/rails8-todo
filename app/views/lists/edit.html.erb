@@ -1,7 +1,14 @@
-<%= form_with model: @list, class: "vstack gap-2" do |f| %>
-  <div class="input-group">
-    <%= f.text_field :name, class: "form-control" %>
-    <%= f.color_field :color, class: "form-control form-control-color" %>
-    <button class="btn btn-primary">Save</button>
+<%= turbo_frame_tag dom_id(@list) do %>
+  <div class="card h-100 shadow-sm">
+    <div class="card-body">
+      <h2 class="h6 mb-3">Rename list</h2>
+      <%= form_with model: @list, class: "vstack gap-2" do |f| %>
+        <div class="input-group">
+          <%= f.text_field :name, class: "form-control" %>
+          <%= f.color_field :color, class: "form-control form-control-color" %>
+          <button class="btn btn-primary">Save</button>
+        </div>
+      <% end %>
+    </div>
   </div>
 <% end %>

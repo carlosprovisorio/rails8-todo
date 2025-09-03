@@ -1,3 +1,15 @@
-<%= turbo_stream.replace "lists" do %>
-  <%= render partial: "lists/grid", locals: { lists: @lists } %> 
+<% if @list.errors.any? %>
+  <%= turbo_stream.replace "lists" do %>
+    <%= render "lists/index_body", lists: current_user.lists.order(:position), list: @list %>
+  <% end %>
+<% else %>
+  <%= turbo_stream.prepend "lists-grid" do %>
+    <div class="col-md-4" data-id="<%= @list.id %>">
+      <%= render "lists/card", list: @list %>
+    </div>
+  <% end %>
+  <%= turbo_stream.replace "lists" do %>
+    <%# Clear the form after success by re-rendering with a fresh @list %>
+    <%= render "lists/index_body", lists: current_user.lists.order(:position), list: current_user.lists.new %>
+  <% end %>
 <% end %>

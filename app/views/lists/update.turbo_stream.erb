@@ -1,3 +1,3 @@
-<%= turbo_stream.replace "lists" do %>
-  <%= render partial: "lists/grid", locals: { lists: @lists } %> 
+<%= turbo_stream.replace dom_id(@list) do %>
+  <%= render "lists/card", list: @list %>
 <% end %>
