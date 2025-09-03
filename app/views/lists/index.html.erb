@@ -1,22 +1,13 @@
 <div class="d-flex align-items-center justify-content-between mb-3">
   <h1 class="h4 mb-0">Your Lists</h1>
-  <%= form_with model: @list, url: lists_path, data: { turbo_frame: "lists" }, class: "d-flex gap-2 flex-wrap" do |f| %>
+
+  <%= form_with model: @list, url: lists_path, data: { turbo_frame: "lists" }, class: "d-flex gap-2" do |f| %>
     <%= f.text_field :name, placeholder: "New list name", class: "form-control" %>
     <%= f.color_field :color, class: "form-control form-control-color", value: "#4f6ef7" %>
     <%= f.submit "Add", class: "btn btn-primary" %>
-
-    <% if @list.errors.any? %> 
-      <div class="w-100 alert alert-warning mt-2 mb-0 py-2">
-        <ul class="mb-0">
-          <% @list.errors.full_messages.each do |msg| %>
-            <li><%= msg %></li>
-          <% end %>
-        </ul>
-      </div>
-    <% end %>
   <% end %>
 </div>
 
 <%= turbo_frame_tag "lists" do %>
-  <%= render "lists/grid" %>
+  <%= render "grid", lists: @lists %>
 <% end %>
