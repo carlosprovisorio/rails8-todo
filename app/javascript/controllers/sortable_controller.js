@@ -1,6 +1,7 @@
 import { Controller } from "@hotwired/stimulus"
 import Sortable from "sortablejs"
 
+// data-controller="sortable" data-sortable-url-value="/lists/reorder"
 export default class extends Controller {
   static values = { url: String }
 
@@ -8,6 +9,7 @@ export default class extends Controller {
     this.sortable = Sortable.create(this.element, {
       animation: 150,
       handle: "[data-drag-handle]",
+      draggable: "turbo-frame, .list-group-item", // <-- important for Turbo frames
       onEnd: () => this.reorder()
     })
   }
@@ -24,7 +26,5 @@ export default class extends Controller {
     })
   }
 
-  disconnect() {
-    this.sortable?.destroy()
-  }
+  disconnect() { this.sortable?.destroy() }
 }

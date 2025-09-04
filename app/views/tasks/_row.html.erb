@@ -1,51 +1,53 @@
-<%= turbo_frame_tag dom_id(task) do %>
-  <div class="list-group-item d-flex align-items-start gap-3" data-id="<%= task.id %>">
-    <div class="pt-1">
-      <%= button_to toggle_status_list_task_path(task.list, task),
-            method: :patch, form: { data: { turbo_stream: true } },
-            class: "btn btn-sm btn-outline-secondary" do %>
-        <%= task.status_done? ? "☑" : "☐" %>
-      <% end %>
+<%= turbo_frame_tag dom_id(task), class: "list-group-item d-flex align-items-start gap-3", data: { id: task.id } do %>
+  <div class="pt-1">
+    <%= button_to toggle_status_list_task_path(task.list, task),
+          method: :patch, form: { data: { turbo_stream: true } },
+          class: "btn btn-sm btn-outline-secondary" do %>
+      <%= task.status_done? ? "☑" : "☐" %>
+    <% end %>
+  </div>
+
+  <div class="flex-grow-1">
+    <div class="d-flex justify-content-between">
+      <strong class="<%= 'text-decoration-line-through text-secondary' if task.status_done? %>">
+        <%= task.title %>
+      </strong>
+      <span data-drag-handle class="text-muted" role="button" title="Drag">≡</span>
     </div>
 
-    <div class="flex-grow-1">
-      <div class="d-flex justify-content-between">
-        <strong class="<%= 'text-decoration-line-through text-secondary' if task.status_done? %>"><%= task.title %></strong>
-        <span data-drag-handle class="text-muted" role="button" title="Drag">≡</span>
-      </div>
-      <div class="small text-secondary">
-        <% if task.due_at %>
-          Due: <%= l(task.due_at, format: :short) %>
+    <div class="small text-secondary">
+      <% if task.due_at %>
+        Due: <%= l(task.due_at, format: :short) %>
+      <% end %>
+      · Priority: <%= task.priority %>
+      <% if task.tag_list.any? %> · Tags: <%= task.tag_list.join(", ") %><% end %>
+    </div>
+
+    <% if task.notes.present? %>
+      <div class="mt-1"><%= simple_format task.notes %></div>
+    <% end %>
+
+    <% if task.files.attached? %>
+      <div class="mt-2 d-flex flex-wrap gap-2">
+        <% task.files.each do |file| %>
+          <span class="badge text-bg-light">
+            <%= link_to file.filename, url_for(file), target: "_blank", rel: "noopener" %>
+            <%= link_to "✕",
+                  attachment_list_task_path(task.list, task, attachment_id: file.id),
+                  data: { turbo_method: :delete, turbo_confirm: "Remove this file?" },
+                  class: "ms-1 text-decoration-none text-danger" %>
+          </span>
         <% end %>
-        · Priority: <%= task.priority %>
-        <% if task.tag_list.any? %> · Tags: <%= task.tag_list.join(", ") %><% end %>
       </div>
-      <% if task.notes.present? %>
-        <div class="mt-1"><%= simple_format task.notes %></div>
-      <% end %>
+    <% end %>
 
-      <% if task.files.attached? %>
-        <div class="mt-2 d-flex flex-wrap gap-2">
-          <% task.files.each do |file| %>
-            <span class="badge text-bg-light">
-              <%= link_to file.filename, url_for(file), target: "_blank", rel: "noopener" %>
-              <%= link_to "✕",
-                    attachment_list_task_path(task.list, task, attachment_id: file.id),
-                    data: { turbo_method: :delete, turbo_confirm: "Remove this file?" },
-                    class: "ms-1 text-decoration-none text-danger" %>
-            </span>
-          <% end %>
-        </div>
-      <% end %>
-
-      <div class="mt-2">
-        <%= link_to "Edit", edit_list_task_path(task.list, task), data: { turbo_frame: dom_id(task) }, class: "btn btn-sm btn-outline-secondary" %>
-        <%= button_to "Delete", list_task_path(task.list, task), method: :delete,
-              form: { data: { turbo_confirm: "Delete task?" } },
-              class: "btn btn-sm btn-outline-danger" %>
-      </div>
-
-      <%= render "task_items/section", task: task %>
+    <div class="mt-2">
+      <%= link_to "Edit", edit_list_task_path(task.list, task), data: { turbo_frame: dom_id(task) }, class: "btn btn-sm btn-outline-secondary" %>
+      <%= button_to "Delete", list_task_path(task.list, task), method: :delete,
+            form: { data: { turbo_confirm: "Delete task?" } },
+            class: "btn btn-sm btn-outline-danger" %>
     </div>
+
+    <%= render "task_items/section", task: task %>
   </div>
 <% end %>

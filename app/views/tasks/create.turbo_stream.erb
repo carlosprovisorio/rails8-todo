@@ -1,5 +1,5 @@
 <%# 1) Append the new task row to the list %>
-<%= turbo_stream.append "tasks" do %>
+<%= turbo_stream.append "task_list" do %>
   <%= render "tasks/row", task: @task %>
 <% end %>
 
