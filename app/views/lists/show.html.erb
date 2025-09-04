@@ -8,37 +8,44 @@
 
 <div class="card mb-3">
   <div class="card-body">
-    <%= form_with model: @task, url: list_tasks_path(@list), data: { turbo_frame: "tasks" }, class: "row g-2 align-items-end" do |f| %>
-      <div class="col-md-4">
-        <%= f.label :title, class: "form-label" %>
-        <%= f.text_field :title, class: "form-control", placeholder: "Task title", autofocus: true %>
-      </div>
-      <div class="col-md-3">
-        <%= f.label :due_at, "Due", class: "form-label" %>
-        <%= f.text_field :due_at, class: "form-control", data: { controller: "date-picker" } %>
-      </div>
-      <div class="col-md-2">
-        <%= f.label :priority, class: "form-label" %>
-        <%= f.select :priority, Task.priorities.keys.map { |p| [p.titleize, p] }, {}, class: "form-select" %>
-      </div>
-      <div class="col-md-3">
-        <%= f.label :files, "Attach (optional)", class: "form-label" %>
-        <%= f.file_field :files, multiple: true, direct_upload: true, class: "form-control" %>
-      </div>
-      <div class="col-12">
-        <%= f.label :notes, class: "form-label" %>
-        <%= f.text_area :notes, rows: 2, class: "form-control" %>
-      </div>
-      <div class="col-12">
-        <%= f.label :tag_list, "Tags (comma-separated)", class: "form-label" %>
-        <%= f.text_field :tag_list, class: "form-control", placeholder: "work, backend, urgent" %>
-      </div>
-      <div class="col-auto">
-        <%= f.submit "Add Task", class: "btn btn-primary" %>
-      </div>
+    <%= turbo_frame_tag "new_task" do %>
+      <%= form_with model: @task,
+            url: list_tasks_path(@list),
+            data: { turbo_frame: "tasks", turbo_submits_with: "Adding…" },
+            class: "row g-2 align-items-end" do |f| %>
+
+        <div class="col-md-4">
+          <%= f.label :title, class: "form-label" %>
+          <%= f.text_field :title, class: "form-control", placeholder: "Task title", autofocus: true %>
+        </div>
+        <div class="col-md-3">
+          <%= f.label :due_at, "Due", class: "form-label" %>
+          <%= f.text_field :due_at, class: "form-control", data: { controller: "date-picker" } %>
+        </div>
+        <div class="col-md-2">
+          <%= f.label :priority, class: "form-label" %>
+          <%= f.select :priority, Task.priorities.keys.map { |p| [p.titleize, p] }, {}, class: "form-select" %>
+        </div>
+        <div class="col-md-3">
+          <%= f.label :files, "Attach (optional)", class: "form-label" %>
+          <%= f.file_field :files, multiple: true, direct_upload: true, class: "form-control" %>
+        </div>
+        <div class="col-12">
+          <%= f.label :notes, class: "form-label" %>
+          <%= f.text_area :notes, rows: 2, class: "form-control" %>
+        </div>
+        <div class="col-12">
+          <%= f.label :tag_list, "Tags (comma-separated)", class: "form-label" %>
+          <%= f.text_field :tag_list, class: "form-control", placeholder: "work, backend, urgent" %>
+        </div>
+        <div class="col-auto">
+          <%= f.submit "Add Task", class: "btn btn-primary" %>
+        </div>
+      <% end %>
     <% end %>
   </div>
 </div>
+
 
 <%= turbo_frame_tag "tasks" do %>
   <div class="list-group" data-controller="sortable" data-sortable-url-value="<%= reorder_list_tasks_path(@list) %>">

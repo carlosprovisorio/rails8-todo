@@ -38,8 +38,8 @@
     </nav>
 
     <main class="container py-4">
-      <% flash.each do |key, value| %>
-        <div class="alert alert-<%= key == "notice" ? "success" : "warning" %>"><%= value %></div>
+      <%= turbo_frame_tag "flash" do %>
+        <%= render "shared/flash" %>
       <% end %>
       <%= yield %>
     </main>

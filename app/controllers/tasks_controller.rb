@@ -6,6 +6,9 @@ class TasksController < ApplicationController
   def create
     @task = current_user.tasks.new(task_params.merge(list: @list, position: next_position))
     if @task.save
+      # Prepare a fresh form object to clear inputs after success
+      @new_task = current_user.tasks.new(list: @list)
+
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task added." }
@@ -14,6 +17,7 @@ class TasksController < ApplicationController
       render "lists/show", status: :unprocessable_entity
     end
   end
+
 
   def edit; end
 
