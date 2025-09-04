@@ -15,11 +15,16 @@ Rails.application.routes.draw do
 
   resources :lists do
     patch :reorder, on: :collection
+
     resources :tasks do
       patch :reorder, on: :collection
-      member { patch :toggle_status }
+
+      member do
+        patch :toggle_status
+        delete "attachments/:attachment_id", to: "attachments#destroy", as: :attachment
+      end
+
       resources :task_items, only: [ :create, :update, :destroy ]
-      delete "attachments/:attachment_id", to: "attachments#destroy", as: :attachment
     end
   end
 

@@ -27,8 +27,11 @@
     <% end %>
   </div>
 
-  <%= form_with url: list_task_task_items_path(task.list, task), class: "d-flex gap-2 mt-2" do |f| %>
+  <%= form_with url: list_task_task_items_path(task.list, task),
+      data: { turbo_submits_with: "Adding…" },
+      class: "d-flex gap-2 mt-2" do |f| %>
     <%= text_field_tag "task_item[title]", nil, class: "form-control", placeholder: "New subtask" %>
     <button class="btn btn-outline-primary btn-sm">Add</button>
   <% end %>
+
 </div>
