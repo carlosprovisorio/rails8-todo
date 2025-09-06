@@ -15,6 +15,7 @@ Rails.application.routes.draw do
 
   resources :lists do
     patch :reorder, on: :collection
+    resources :saved_views, only: [ :create, :destroy ]
 
     resources :tasks do
       patch :reorder, on: :collection
