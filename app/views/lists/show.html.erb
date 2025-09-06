@@ -36,34 +36,36 @@
                   class: "row g-2 align-items-end" do %>
 
       <div class="col-md-4">
-        <label class="form-label">Search</label>
-        <input type="search" name="q" value="<%= params[:q] %>" class="form-control" placeholder="Title, notes, tags">
+        <%= label_tag :q, "Search", class: "form-label" %>
+        <%= search_field_tag :q, params[:q], class: "form-control", placeholder: "Title, notes, tags", id: "q" %>
+      </div>
+
+
+
+      <div class="col-md-2">
+        <%= label_tag :due, "Due", class: "form-label" %>
+        <%= select_tag :due,
+              options_for_select([["Any",""],["Overdue","overdue"],["Today","today"],["This week","week"],["No due date","none"]], params[:due]),
+              class: "form-select", id: "due" %>
       </div>
 
       <div class="col-md-2">
-        <label class="form-label">Due</label>
-        <select name="due" class="form-select">
-          <%= options_for_select([["Any",""],["Overdue","overdue"],["Today","today"],["This week","week"],["No due date","none"]], params[:due]) %>
-        </select>
+        <%= label_tag :priority, "Priority", class: "form-label" %>
+        <%= select_tag :priority,
+          options_for_select([["Any",""]] + Task.priorities.keys.map { |p| [p.titleize, p] }, params[:priority]),
+          class: "form-select", id: "priority" %>
       </div>
 
       <div class="col-md-2">
-        <label class="form-label">Priority</label>
-        <select name="priority" class="form-select">
-          <%= options_for_select([["Any",""]] + Task.priorities.keys.map{ |p| [p.titleize, p] }, params[:priority]) %>
-        </select>
+        <%= label_tag :status, "Status", class: "form-label" %>
+        <%= select_tag :status,
+              options_for_select([["Any",""]] + Task.statuses.keys.map { |s| [s.titleize, s] }, params[:status]),
+              class: "form-select", id: "status" %>
       </div>
 
       <div class="col-md-2">
-        <label class="form-label">Status</label>
-        <select name="status" class="form-select">
-          <%= options_for_select([["Any",""]] + Task.statuses.keys.map{ |s| [s.titleize, s] }, params[:status]) %>
-        </select>
-      </div>
-
-      <div class="col-md-2">
-        <label class="form-label">Tag</label>
-        <input name="tag" value="<%= params[:tag] %>" class="form-control" list="tag-options">
+        <%= label_tag :tag, "Tag", class: "form-label" %>
+        <%= text_field_tag :tag, params[:tag], class: "form-control", list: "tag-options", id: "tag" %>
         <datalist id="tag-options">
           <% @available_tags.each do |t| %>
             <option value="<%= t %>"></option>
@@ -73,10 +75,10 @@
 
 
       <div class="col-md-2">
-        <label class="form-label">Sort</label>
-        <select name="sort" class="form-select">
-          <%= options_for_select([["Manual","manual"],["Due ↑","due_asc"],["Due ↓","due_desc"],["Priority","priority"],["Created ↑","created_asc"],["Created ↓","created_desc"]], params[:sort] || "manual") %>
-        </select>
+        <%= label_tag :sort, "Sort", class: "form-label" %>
+        <%= select_tag :sort,
+              options_for_select([["Manual","manual"],["Due ↑","due_asc"],["Due ↓","due_desc"],["Priority","priority"],["Created ↑","created_asc"],["Created ↓","created_desc"]], params[:sort] || "manual"),
+              class: "form-select", id: "sort" %>
       </div>
 
       <!-- Optional explicit submit for keyboard users -->
