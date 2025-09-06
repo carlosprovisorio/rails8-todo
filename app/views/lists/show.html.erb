@@ -63,10 +63,14 @@
 
       <div class="col-md-2">
         <label class="form-label">Tag</label>
-        <select name="tag" class="form-select">
-          <%= options_for_select([["Any",""]] + @available_tags.map{ |t| [t, t] }, params[:tag]) %>
-        </select>
+        <input name="tag" value="<%= params[:tag] %>" class="form-control" list="tag-options">
+        <datalist id="tag-options">
+          <% @available_tags.each do |t| %>
+            <option value="<%= t %>"></option>
+          <% end %>
+        </datalist>
       </div>
+
 
       <div class="col-md-2">
         <label class="form-label">Sort</label>
