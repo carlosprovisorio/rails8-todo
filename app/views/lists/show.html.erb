@@ -6,6 +6,28 @@
   <%= link_to "All lists", lists_path, class: "btn btn-outline-secondary btn-sm" %>
 </div>
 
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <div class="d-flex flex-wrap gap-2">
+    <% @saved_views.each do |v| %>
+      <%= link_to v.name, list_path(@list, v.query), class: "btn btn-sm btn-outline-secondary" %>
+      <%= button_to "✕",
+      list_saved_view_path(@list, v),
+      method: :delete,
+      form: { data: { turbo_confirm: "Delete saved view '#{v.name}'?" } },
+      class: "btn btn-sm btn-outline-danger" %>
+    <% end %>
+  </div>
+
+  <%= form_with url: list_saved_views_path(@list), method: :post, class: "d-flex gap-2" do %>
+    <input type="text" name="name" class="form-control form-control-sm" placeholder="Save current view as…" required />
+    <%# Include current query params so controller can capture them %>
+    <% [:q,:due,:priority,:status,:tag,:sort].each do |k| %>
+      <%= hidden_field_tag k, params[k] if params[k].present? %>
+    <% end %>
+    <button class="btn btn-sm btn-primary">Save</button>
+  <% end %>
+</div>
+
 <div class="card mb-3">
   <div class="card-body">
     <%= form_with url: list_path(@list), method: :get,
