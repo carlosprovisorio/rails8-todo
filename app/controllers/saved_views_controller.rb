@@ -11,4 +11,14 @@ class SavedViewsController < ApplicationController
       redirect_to @list, alert: view.errors.full_messages.to_sentence
     end
   end
+
+  def destroy
+    current_user.saved_views.find_by!(list: @list, id: params[:id]).destroy
+    redirect_to @list, notice: "View deleted."
+  end
+
+  private
+  def set_style
+    @list = current_user.lists.find(params[:list_id])
+  end
 end
