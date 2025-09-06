@@ -1,5 +1,10 @@
-@import "bootstrap/scss/bootstrap";
+@use "bootstrap/scss/bootstrap" with (
+  $body-bg: #0b0e14,
+  $body-color: #e8eaed,
+  // add other tokens you were overriding
+);
 @import "flatpickr/dist/flatpickr.min.css";
+
 
 /* Drag affordance */
 [data-drag-handle] { cursor: grab; }
