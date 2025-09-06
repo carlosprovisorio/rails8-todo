@@ -8,8 +8,12 @@ class ListsController < ApplicationController
   end
 
   def show
-    @tasks = @list.tasks.active.order(:position)
-    @task  = current_user.tasks.new(list: @list)
+    @tasks = TasksQuery
+              .new(@list.tasks.active)
+              .call(params.slice(:q, :due, :priority, :status, :tag, :sort))
+    @task = current_user.tasks.new(list: @list)
+    @available_tags = @list.tasks.tag_counts_on(:tags).map(&:name)
+    @saved_views = current_user.saved_views.where(list: @list).order(:name)
   end
 
   def create

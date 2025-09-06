@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.0].define(version: 2025_08_20_000231) do
+ActiveRecord::Schema[8.0].define(version: 2025_09_06_184816) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
   enable_extension "pg_trgm"
@@ -77,6 +77,18 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_20_000231) do
     t.index ["delivered_at"], name: "index_reminders_on_delivered_at"
     t.index ["task_id", "remind_at"], name: "index_reminders_on_task_id_and_remind_at"
     t.index ["task_id"], name: "index_reminders_on_task_id"
+  end
+
+  create_table "saved_views", force: :cascade do |t|
+    t.bigint "user_id", null: false
+    t.bigint "list_id", null: false
+    t.string "name", null: false
+    t.jsonb "query", default: {}, null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["list_id"], name: "index_saved_views_on_list_id"
+    t.index ["user_id", "list_id", "name"], name: "index_saved_views_on_user_id_and_list_id_and_name", unique: true
+    t.index ["user_id"], name: "index_saved_views_on_user_id"
   end
 
   create_table "taggings", force: :cascade do |t|
@@ -160,6 +172,8 @@ ActiveRecord::Schema[8.0].define(version: 2025_08_20_000231) do
   add_foreign_key "lists", "users"
   add_foreign_key "recurrence_rules", "tasks"
   add_foreign_key "reminders", "tasks"
+  add_foreign_key "saved_views", "lists"
+  add_foreign_key "saved_views", "users"
   add_foreign_key "taggings", "tags"
   add_foreign_key "task_items", "tasks"
   add_foreign_key "tasks", "lists"

@@ -6,6 +6,89 @@
   <%= link_to "All lists", lists_path, class: "btn btn-outline-secondary btn-sm" %>
 </div>
 
+<div class="d-flex align-items-center justify-content-between mb-2">
+  <div class="d-flex flex-wrap gap-2">
+    <% @saved_views.each do |v| %>
+      <%= link_to v.name, list_path(@list, v.query), class: "btn btn-sm btn-outline-secondary" %>
+      <%= button_to "✕",
+      list_saved_view_path(@list, v),
+      method: :delete,
+      form: { data: { turbo_confirm: "Delete saved view '#{v.name}'?" } },
+      class: "btn btn-sm btn-outline-danger" %>
+    <% end %>
+  </div>
+
+  <%= form_with url: list_saved_views_path(@list), method: :post, class: "d-flex gap-2" do %>
+    <input type="text" name="name" class="form-control form-control-sm" placeholder="Save current view as…" required />
+    <%# Include current query params so controller can capture them %>
+    <% [:q,:due,:priority,:status,:tag,:sort].each do |k| %>
+      <%= hidden_field_tag k, params[k] if params[k].present? %>
+    <% end %>
+    <button class="btn btn-sm btn-primary">Save</button>
+  <% end %>
+</div>
+
+<div class="card mb-3">
+  <div class="card-body">
+    <%= form_with url: list_path(@list), method: :get,
+                  data: { controller: "debounce-submit", action: "input->debounce-submit#submit change->debounce-submit#submit",
+                          turbo_frame: "tasks" },
+                  class: "row g-2 align-items-end" do %>
+
+      <div class="col-md-4">
+        <%= label_tag :q, "Search", class: "form-label" %>
+        <%= search_field_tag :q, params[:q], class: "form-control", placeholder: "Title, notes, tags", id: "q" %>
+      </div>
+
+
+
+      <div class="col-md-2">
+        <%= label_tag :due, "Due", class: "form-label" %>
+        <%= select_tag :due,
+              options_for_select([["Any",""],["Overdue","overdue"],["Today","today"],["This week","week"],["No due date","none"]], params[:due]),
+              class: "form-select", id: "due" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :priority, "Priority", class: "form-label" %>
+        <%= select_tag :priority,
+          options_for_select([["Any",""]] + Task.priorities.keys.map { |p| [p.titleize, p] }, params[:priority]),
+          class: "form-select", id: "priority" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :status, "Status", class: "form-label" %>
+        <%= select_tag :status,
+              options_for_select([["Any",""]] + Task.statuses.keys.map { |s| [s.titleize, s] }, params[:status]),
+              class: "form-select", id: "status" %>
+      </div>
+
+      <div class="col-md-2">
+        <%= label_tag :tag, "Tag", class: "form-label" %>
+        <%= text_field_tag :tag, params[:tag], class: "form-control", list: "tag-options", id: "tag" %>
+        <datalist id="tag-options">
+          <% @available_tags.each do |t| %>
+            <option value="<%= t %>"></option>
+          <% end %>
+        </datalist>
+      </div>
+
+
+      <div class="col-md-2">
+        <%= label_tag :sort, "Sort", class: "form-label" %>
+        <%= select_tag :sort,
+              options_for_select([["Manual","manual"],["Due ↑","due_asc"],["Due ↓","due_desc"],["Priority","priority"],["Created ↑","created_asc"],["Created ↓","created_desc"]], params[:sort] || "manual"),
+              class: "form-select", id: "sort" %>
+      </div>
+
+      <!-- Optional explicit submit for keyboard users -->
+      <div class="col-auto">
+        <button class="btn btn-outline-secondary">Apply</button>
+      </div>
+    <% end %>
+  </div>
+</div>
+
 <div class="card mb-3">
   <div class="card-body">
     <%= turbo_frame_tag "new_task" do %>

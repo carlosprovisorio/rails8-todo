@@ -1,0 +1,11 @@
+one:
+  user: one
+  list: one
+  name: "Inbox Today"
+  query: {}
+
+two:
+  user: one
+  list: one
+  name: "Urgent"
+  query: {}
