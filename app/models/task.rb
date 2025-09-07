@@ -7,6 +7,9 @@ class Task < ApplicationRecord
   has_many :reminders, dependent: :destroy
   has_one  :recurrence_rule, dependent: :destroy
 
+  after_commit :materialize_next_if_completed, on: :update
+
+
   # Attachments
   has_many_attached :files
 
@@ -57,6 +60,11 @@ class Task < ApplicationRecord
   end
 
   private
+
+  def materialize_next_if_completed
+    return unless saved_change_to_status? && status_done?
+    RecurrenceService.materialize_next!(self)
+  end
 
   # Maintain completed_at based on status transitions.
   # In Rails 7.1+ use will_save_change_to_attribute? inside before_save.
