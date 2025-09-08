@@ -4,11 +4,9 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :edit, :update, :destroy, :toggle_status ]
 
   def create
-    @task = current_user.tasks.new(task_params.merge(list: @list, position: next_position))
+    @task = current_user.tasks.new(task_params.except(:recurrence).merge(list: @list, position: next_position))
     if @task.save
-      # Prepare a fresh form object to clear inputs after success
-      @new_task = current_user.tasks.new(list: @list)
-
+      handle_recurrence(@task, task_params[:recurrence])
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task added." }
@@ -22,7 +20,8 @@ class TasksController < ApplicationController
   def edit; end
 
   def update
-    if @task.update(task_params)
+    if @task.update(task_params.except(:recurrence))
+      handle_recurrence(@task, task_params[:recurrence])
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task updated." }
@@ -52,6 +51,12 @@ class TasksController < ApplicationController
       end
     end
     head :ok
+  end
+
+  def handle_recurrence(task, recurrence_params)
+    return if recurrence_params.blank? || recurrence_params[:type].blank?
+    schedule = RecurrenceService.build_schedule(task: task, params: recurrence_params, time_zone: current_user.time_zone || "America/Toronto")
+    RecurrenceService.set_recurrence!(task: task, schedule:, time_zone: current_user.time_zone || "America/Toronto")
   end
 
   private
