@@ -62,7 +62,13 @@ class TasksController < ApplicationController
     @task = @list.tasks.find(params[:id])
   end
   def task_params
-    params.require(:task).permit(:title, :notes, :due_at, :priority, :status, tag_list: [], files: [])
+    p = params.require(:task).permit(:title, :notes, :due_at, :priority, :status, :tag_list, files: [],
+                                   recurrence: [ :type, :interval, :day, days: [] ])
+    # Normalize tag_list (string -> array) because our create form used a text field
+    if p[:tag_list].is_a?(String)
+      p[:tag_list] = p[:tag_list].split(",").map(&:strip)
+    end
+    p
   end
   def next_position
     (@list.tasks.maximum(:position) || -1) + 1
