@@ -12,6 +12,7 @@ class TasksController < ApplicationController
         f.html { redirect_to @list, notice: "Task added." }
       end
     else
+      prepare_list_show_ivars
       render "lists/show", status: :unprocessable_entity
     end
   end
@@ -27,6 +28,7 @@ class TasksController < ApplicationController
         f.html { redirect_to @list, notice: "Task updated." }
       end
     else
+      prepare_list_show_ivars
       render :edit, status: :unprocessable_entity
     end
   end
@@ -60,6 +62,16 @@ class TasksController < ApplicationController
   end
 
   private
+
+  def prepare_list_show_ivars
+    @tasks = TasksQuery
+              .new(@list.tasks.active)
+              .call(params.slice(:q, :due, :priority, :status, :tag, :sort))
+    @available_tags = @list.tasks.tag_counts_on(:tags).map(&:name)
+    @saved_views    = current_user.saved_views.where(list: @list).order(:name)
+    @task           = @task || current_user.tasks.new(list: @list)
+  end
+
   def set_list
     @list = current_user.lists.find(params[:list_id])
   end

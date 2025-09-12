@@ -15,19 +15,17 @@ Rails.application.routes.draw do
 
   resources :lists do
     patch :reorder, on: :collection
+
     resources :saved_views, only: [ :create, :destroy ]
 
-    resources :tasks do
+    resources :tasks, only: [ :create, :edit, :update, :destroy ] do
       patch :reorder, on: :collection
-
-      member do
-        patch :toggle_status
-        delete "attachments/:attachment_id", to: "attachments#destroy", as: :attachment
-      end
-
+      member { patch :toggle_status }
       resources :task_items, only: [ :create, :update, :destroy ]
+      delete "attachments/:attachment_id", to: "attachments#destroy", as: :attachment
     end
   end
+
 
   if Rails.env.development?
     mount LetterOpenerWeb::Engine, at: "/letter_opener"
