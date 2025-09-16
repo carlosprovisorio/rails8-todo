@@ -6,12 +6,14 @@ import DebounceSubmitController from "./debounce_submit_controller"
 import SortableController from "./sortable_controller"
 import DatePickerController from "./date_picker_controller"
 import ThemeController from "./theme_controller"
+import RecurrenceController from "./recurrence_controller"
 
 const application = Application.start()
 application.register("debounce-submit", DebounceSubmitController)
 application.register("sortable", SortableController)
 application.register("date-picker", DatePickerController)
 application.register("theme", ThemeController)
+application.register("recurrence", RecurrenceController)
 
 // For debugging in console
 window.Stimulus = application

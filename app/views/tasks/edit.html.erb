@@ -1,14 +1,36 @@
-<%= form_with model: [@list, @task], class: "vstack gap-2" do |f| %>
-  <div class="row g-2">
-    <div class="col-md-6"><%= f.text_field :title, class: "form-control" %></div>
-    <div class="col-md-3"><%= f.text_field :due_at, class: "form-control", data: { controller: "date-picker" } %></div>
-    <div class="col-md-3"><%= f.select :priority, Task.priorities.keys.map{|p|[p.titleize,p]}, {}, class: "form-select" %></div>
+<hr class="my-3">
+<h2 class="h6">Recurrence</h2>
+<div class="row g-2">
+  <div class="col-md-3">
+    <label class="form-label">Type</label>
+    <select name="task[recurrence][type]" class="form-select" data-controller="recurrence">
+      <%= options_for_select([["None",""], ["Daily","daily"], ["Weekly","weekly"], ["Monthly","monthly"]], "") %>
+    </select>
   </div>
-  <%= f.text_area :notes, rows: 3, class: "form-control" %>
-  <%= f.text_field :tag_list, class: "form-control", placeholder: "tags" %>
-  <%= f.file_field :files, multiple: true, direct_upload: true, class: "form-control" %>
-  <div class="d-flex gap-2">
-    <button class="btn btn-primary">Save</button>
-    <%= link_to "Cancel", list_path(@list), data: { turbo_frame: "_top" }, class: "btn btn-outline-secondary" %>
+  <div class="col-md-3">
+    <label class="form-label">Every</label>
+    <div class="input-group">
+      <input type="number" name="task[recurrence][interval]" min="1" value="1" class="form-control">
+      <span class="input-group-text">interval(s)</span>
+    </div>
   </div>
-<% end %>
+
+  <!-- Weekly options -->
+  <div class="col-md-6" data-recurrence-target="weekly" hidden>
+    <label class="form-label">Days of week</label>
+    <div class="d-flex flex-wrap gap-2">
+      <% %w[monday tuesday wednesday thursday friday saturday sunday].each do |d| %>
+        <label class="form-check form-check-inline">
+          <input class="form-check-input" type="checkbox" name="task[recurrence][days][]" value="<%= d %>">
+          <span class="form-check-label text-capitalize"><%= d %></span>
+        </label>
+      <% end %>
+    </div>
+  </div>
+
+  <!-- Monthly options -->
+  <div class="col-md-3" data-recurrence-target="monthly" hidden>
+    <label class="form-label">Day of month</label>
+    <input type="number" min="1" max="31" name="task[recurrence][day]" class="form-control" placeholder="e.g. 15">
+  </div>
+</div>

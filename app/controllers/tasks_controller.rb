@@ -4,30 +4,34 @@ class TasksController < ApplicationController
   before_action :set_task, only: [ :edit, :update, :destroy, :toggle_status ]
 
   def create
-    @task = current_user.tasks.new(task_params.merge(list: @list, position: next_position))
-    if @task.save
-      # Prepare a fresh form object to clear inputs after success
-      @new_task = current_user.tasks.new(list: @list)
+    @task = current_user.tasks.new(task_params.except(:recurrence).merge(list: @list, position: next_position))
 
+    if @task.save
+      handle_recurrence(@task, task_params[:recurrence])
+      @new_task = current_user.tasks.new(list: @list)   # 👈 add this
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task added." }
       end
     else
+      prepare_list_show_ivars                     # you already added this earlier
       render "lists/show", status: :unprocessable_entity
     end
   end
 
 
+
   def edit; end
 
   def update
-    if @task.update(task_params)
+    if @task.update(task_params.except(:recurrence))
+      handle_recurrence(@task, task_params[:recurrence])
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task updated." }
       end
     else
+      prepare_list_show_ivars
       render :edit, status: :unprocessable_entity
     end
   end
@@ -54,7 +58,23 @@ class TasksController < ApplicationController
     head :ok
   end
 
+  def handle_recurrence(task, recurrence_params)
+    return if recurrence_params.blank? || recurrence_params[:type].blank?
+    schedule = RecurrenceService.build_schedule(task: task, params: recurrence_params, time_zone: current_user.time_zone || "America/Toronto")
+    RecurrenceService.set_recurrence!(task: task, schedule:, time_zone: current_user.time_zone || "America/Toronto")
+  end
+
   private
+
+  def prepare_list_show_ivars
+    @tasks = TasksQuery
+              .new(@list.tasks.active)
+              .call(params.slice(:q, :due, :priority, :status, :tag, :sort))
+    @available_tags = @list.tasks.tag_counts_on(:tags).map(&:name)
+    @saved_views    = current_user.saved_views.where(list: @list).order(:name)
+    @task           = @task || current_user.tasks.new(list: @list)
+  end
+
   def set_list
     @list = current_user.lists.find(params[:list_id])
   end
@@ -62,7 +82,13 @@ class TasksController < ApplicationController
     @task = @list.tasks.find(params[:id])
   end
   def task_params
-    params.require(:task).permit(:title, :notes, :due_at, :priority, :status, tag_list: [], files: [])
+    p = params.require(:task).permit(:title, :notes, :due_at, :priority, :status, :tag_list, files: [],
+                                   recurrence: [ :type, :interval, :day, days: [] ])
+    # Normalize tag_list (string -> array) because our create form used a text field
+    if p[:tag_list].is_a?(String)
+      p[:tag_list] = p[:tag_list].split(",").map(&:strip)
+    end
+    p
   end
   def next_position
     (@list.tasks.maximum(:position) || -1) + 1
