@@ -5,17 +5,20 @@ class TasksController < ApplicationController
 
   def create
     @task = current_user.tasks.new(task_params.except(:recurrence).merge(list: @list, position: next_position))
+
     if @task.save
       handle_recurrence(@task, task_params[:recurrence])
+      @new_task = current_user.tasks.new(list: @list)   # 👈 add this
       respond_to do |f|
         f.turbo_stream
         f.html { redirect_to @list, notice: "Task added." }
       end
     else
-      prepare_list_show_ivars
+      prepare_list_show_ivars                     # you already added this earlier
       render "lists/show", status: :unprocessable_entity
     end
   end
+
 
 
   def edit; end
